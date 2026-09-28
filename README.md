@@ -1,6 +1,6 @@
 # Checkpoint 02 — APIs, energias renováveis e aprendizado de máquina
 
-**Aluno:** Patrick <sobrenome> — RM572899 — Turma 1CCPW
+**Aluno:** Patrick Fernandes Martins Pais — RM572899 — Turma 1CCPW
 **Disciplina:** Soluções em Energias Renováveis e Sustentáveis — Prof. André Tritiack
 
 ## Objetivo
@@ -69,7 +69,7 @@ temperatura dos módulos, sombreamento e perdas do inversor.
 
 ## Estrutura do repositório
 
-CP2_SERS_PRONTO.ipynb
-aneel_classificacao_orange.csv
-meteo_regressao_orange.csv
-README.md
+- `CP2_SERS_PRONTO.ipynb` — notebook completo (APIs, análise, seis modelos e conclusões)
+- `aneel_classificacao_orange.csv` — dados da Tarefa 1
+- `meteo_regressao_orange.csv` — dados da Tarefa 2
+- `README.md` — este arquivo
