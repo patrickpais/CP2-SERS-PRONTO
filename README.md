@@ -69,7 +69,7 @@ temperatura dos módulos, sombreamento e perdas do inversor.
 
 ## Estrutura do repositório
 
-- `Aula_APIs_Energia_Renovavel_ML.ipynb` — notebook completo
-- `aneel_classificacao_orange.csv` — dados da Tarefa 1
-- `meteo_regressao_orange.csv` — dados da Tarefa 2
-- `README.md`
+CP2_SERS_PRONTO.ipynb
+aneel_classificacao_orange.csv
+meteo_regressao_orange.csv
+README.md
