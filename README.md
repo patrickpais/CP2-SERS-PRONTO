@@ -26,7 +26,7 @@ nova consulta pode retornar registros um pouco diferentes.
 
 ## Como executar
 
-1. Abra `Aula_APIs_Energia_Renovavel_ML.ipynb` no Google Colab ou em um Jupyter local
+1. Abra `CP2_SERS_PRONTO.ipynb` no Google Colab ou em um Jupyter local
    (Python 3.10+).
 2. A primeira célula instala as dependências: `pandas`, `matplotlib`, `seaborn`,
    `scikit-learn`.
