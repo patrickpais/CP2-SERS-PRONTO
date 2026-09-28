@@ -65,7 +65,49 @@ temperatura dos módulos, sombreamento e perdas do inversor.
 
 ## Atividade complementar — Orange Data Mining
 
-<em construção — prints dos fluxos e análise serão adicionados aqui>
+Os dois CSVs foram analisados no Orange, com três algoritmos por tarefa e a mesma
+configuração de **Test and Score** dentro de cada tarefa.
+
+### Classificação — ANEEL
+
+Fluxo: File → Select Columns (features: `potencia_kw`, `latitude`, `longitude`; target: `fonte`)
+→ Logistic Regression, kNN e Random Forest (200 árvores) → Test and Score → Confusion Matrix.
+Avaliação: **Random sampling, 10 repetições, 80% treino, estratificado**; métricas com média
+sobre as classes.
+
+![Fluxo classificação](orange_fluxo_classificacao.png)
+![Test and Score classificação](orange_testscore_classificacao.png)
+
+| Modelo | CA | Precision | Recall | F1 |
+|---|---|---|---|---|
+| Logistic Regression | | | | |
+| kNN | | | | |
+| Random Forest | | | | |
+
+<análise: qual foi o melhor, quais classes a Confusion Matrix mostra como mais confundidas,
+e a limitação de prever a fonte só com potência e localização>
+
+![Matriz de confusão](orange_confusion_matrix.png)
+
+### Regressão — Open-Meteo
+
+Fluxo: File → Select Columns (features: `temperatura_c`, `umidade_pct`, `nuvens_pct`,
+`vento_kmh`, `hora`; target: `radiacao_w_m2`; meta: `data_hora`) → Linear Regression, Tree e
+Random Forest (200 árvores) → Test and Score.
+Avaliação: **validação cruzada com 10 partes**. Essa divisão é aleatória e não respeita a
+ordem temporal das horas, o que tende a superestimar o desempenho; por isso as métricas não
+são diretamente comparáveis às do notebook, que usou divisão temporal 80/20.
+
+![Fluxo regressão](orangfluxo_regressao.png)
+![Test and Score regressão](orange_testscore_regressao.png)
+
+| Modelo | MAE (W/m²) | MSE ((W/m²)²) | R² |
+|---|---|---|---|
+| Linear Regression | | | |
+| Tree | | | |
+| Random Forest | | | |
+
+<análise: qual foi o melhor, o papel da hora, e por que radiação não é geração elétrica>
 
 ## Estrutura do repositório
 
