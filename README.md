@@ -75,7 +75,7 @@ Fluxo: File → Select Columns (features: `potencia_kw`, `latitude`, `longitude`
 Avaliação: **Random sampling, 10 repetições, 80% treino, estratificado**; métricas com média
 sobre as classes.
 
-![Fluxo classificação](orange_fluxo_classificacao.png)
+![Fluxo orange](orange_fluxo.png)
 ![Test and Score classificação](orange_testscore_classificacao.png)
 
 | Modelo | CA | Precision | Recall | F1 |
@@ -98,7 +98,7 @@ Avaliação: **validação cruzada com 10 partes**. Essa divisão é aleatória 
 ordem temporal das horas, o que tende a superestimar o desempenho; por isso as métricas não
 são diretamente comparáveis às do notebook, que usou divisão temporal 80/20.
 
-![Fluxo regressão](orangfluxo_regressao.png)
+![Fluxo regressão](orang_fluxo.png)
 ![Test and Score regressão](orange_testscore_regressao.png)
 
 | Modelo | MAE (W/m²) | MSE ((W/m²)²) | R² |
