@@ -65,49 +65,73 @@ temperatura dos módulos, sombreamento e perdas do inversor.
 
 ## Atividade complementar — Orange Data Mining
 
-Os dois CSVs foram analisados no Orange, com três algoritmos por tarefa e a mesma
+Os dois CSVs gerados pelo notebook foram analisados no Orange usando o fluxo
+`Fluxos_para_Classificacao_e_Regressao.ows` fornecido pelo professor (salvo aqui como
+`fluxo_orange.ows`), conforme orientação em aula: dois algoritmos por tarefa, com a mesma
 configuração de **Test and Score** dentro de cada tarefa.
+
+![Fluxo Orange](orange_fluxo.png)
 
 ### Classificação — ANEEL
 
 Fluxo: File → Select Columns (features: `potencia_kw`, `latitude`, `longitude`; target: `fonte`)
-→ Logistic Regression, kNN e Random Forest (200 árvores) → Test and Score → Confusion Matrix.
-Avaliação: **Random sampling, 10 repetições, 80% treino, estratificado**; métricas com média
-sobre as classes.
+→ Logistic Regression e kNN → Test and Score → Confusion Matrix.
+Avaliação: **validação cruzada estratificada com 5 partes**, sobre os 3876 empreendimentos;
+métricas com média sobre as classes.
 
-![Fluxo orange](orange_fluxo.png)
-![Test and Score classificação](orange_testscore_classificacao.png)
+![Test and Score classificação](orange_testscore_regressao.png)
 
-| Modelo | CA | Precision | Recall | F1 |
+| Modelo | CA (Accuracy) | Precision | Recall | F1 |
 |---|---|---|---|---|
-| Logistic Regression | | | | |
-| kNN | | | | |
-| Random Forest | | | | |
+| Logistic Regression | 0,807 | 0,815 | 0,807 | 0,805 |
+| kNN | **0,870** | **0,872** | **0,870** | **0,871** |
 
-<análise: qual foi o melhor, quais classes a Confusion Matrix mostra como mais confundidas,
-e a limitação de prever a fonte só com potência e localização>
+O kNN foi o melhor dos dois. A matriz de confusão da Regressão Logística mostra o mesmo
+padrão do notebook: **Solar é a classe mais confundida**, com 303 usinas solares previstas
+como Eólica e 111 como Hidráulica (de 1200), enquanto 109 eólicas foram previstas como
+Hidráulica. Solar e eólica coexistem no interior do Nordeste, e uma fronteira linear não
+separa esses agrupamentos geográficos.
 
 ![Matriz de confusão](orange_confusion_matrix.png)
+
+Comparação com o notebook: a Regressão Logística ficou próxima (0,805 vs 0,820 de F1), mas
+o kNN caiu de 0,965 para 0,871. A diferença provável é a **padronização**: no notebook o
+kNN roda dentro de um `Pipeline` com `StandardScaler`; no Orange, sem esse passo, a
+`potencia_kw` (em milhares de kW) domina o cálculo de distância e a localização quase não
+pesa. Isso confirma na prática a importância de escalar os dados para algoritmos baseados
+em distância. A limitação de fundo é a mesma: potência e localização não descrevem o
+recurso físico (sol, vento, água) que define a fonte.
 
 ### Regressão — Open-Meteo
 
 Fluxo: File → Select Columns (features: `temperatura_c`, `umidade_pct`, `nuvens_pct`,
-`vento_kmh`, `hora`; target: `radiacao_w_m2`; meta: `data_hora`) → Linear Regression, Tree e
-Random Forest (200 árvores) → Test and Score.
-Avaliação: **validação cruzada com 10 partes**. Essa divisão é aleatória e não respeita a
-ordem temporal das horas, o que tende a superestimar o desempenho; por isso as métricas não
-são diretamente comparáveis às do notebook, que usou divisão temporal 80/20.
+`vento_kmh`, `hora`; target: `radiacao_w_m2`; meta: `data_hora`) → Linear Regression e
+Tree → Test and Score.
+Avaliação: **validação cruzada com 5 partes**, sobre as 1001 horas. Essa divisão é
+aleatória e não respeita a ordem temporal, o que tende a superestimar o desempenho; por
+isso as métricas não são diretamente comparáveis às do notebook, que usou divisão temporal
+80/20.
 
-![Fluxo regressão](orang_fluxo.png)
-![Test and Score regressão](orange_testscore_regressao.png)
+![Test and Score regressão](orange_testscore_classificacao.png)
 
-| Modelo | MAE (W/m²) | MSE ((W/m²)²) | R² |
-|---|---|---|---|
-| Linear Regression | | | |
-| Tree | | | |
-| Random Forest | | | |
+| Modelo | RMSE (W/m²) | MSE ((W/m²)²) | MAE (W/m²) | R² |
+|---|---|---|---|---|
+| Linear Regression | 151,4 | ≈ 22.900 | ≈ 118 | 0,652 |
+| Tree | **87,0** | **7.571** | **61,4** | **0,885** |
 
-<análise: qual foi o melhor, o papel da hora, e por que radiação não é geração elétrica>
+O Orange exibe RMSE; o MSE foi obtido por **MSE = RMSE²**.
+
+A Tree foi muito superior à Regressão Linear, pelo mesmo motivo observado no notebook: a
+radiação sobe e desce ao longo do dia (formato de sino em função da `hora`), e uma reta não
+representa essa curva, enquanto a árvore separa o dia em faixas de hora. A Regressão Linear
+obteve R² 0,652 no Orange contra 0,360 no notebook: como a validação cruzada mistura horas
+de abril e junho no treino e no teste, o modelo é avaliado em condições que já viu, o que
+ilustra a superestimação prevista acima.
+
+Estimar radiação não equivale a prever geração elétrica: W/m² é a energia solar que chega
+ao plano horizontal, e a energia produzida depende ainda da área, inclinação e eficiência
+dos painéis, da temperatura dos módulos, de sombreamento e sujeira, das perdas do inversor
+e do tempo de exposição (energia em kWh exige integrar a potência ao longo das horas).
 
 ## Estrutura do repositório
 
@@ -115,3 +139,6 @@ são diretamente comparáveis às do notebook, que usou divisão temporal 80/20.
 - `aneel_classificacao_orange.csv` — dados da Tarefa 1
 - `meteo_regressao_orange.csv` — dados da Tarefa 2
 - `README.md` — este arquivo
+- `aneel_treino.csv`, `aneel_teste.csv`, `meteo_treino.csv`, `meteo_teste.csv` — divisões de treino/teste exportadas pelo notebook
+- `fluxo_orange.ows` — fluxo do Orange
+- `orange_*.png` — capturas dos fluxos, tabelas do Test and Score e matriz de confusão
